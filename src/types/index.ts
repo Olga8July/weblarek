@@ -5,6 +5,8 @@ export interface IApi {
     post<T extends object>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
 
+export type TPayment = 'card' | 'cash';
+
 export interface IProduct {
   id: string;
   description: string;
@@ -14,22 +16,21 @@ export interface IProduct {
   price: number | null;
 } 
 
+export type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
+
 export interface IBuyer {
-  payment: 'card' | 'cash';
+  payment: TPayment;
   email: string;
   phone: string;
   address: string;
 }
 
 export interface IServerProductsResponse {
+  total: number;
   items: IProduct[];
 }
 
-export interface IOrderRequest {
-  payment: 'card' | 'cash';
-  email: string;
-  phone: string;
-  address: string;
+export interface IOrderRequest extends IBuyer {
   total: number;
   items: string[];
 }

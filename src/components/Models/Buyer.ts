@@ -1,21 +1,16 @@
-import { IBuyer } from '../../../types/index';
+import { IBuyer, TPayment, TBuyerErrors } from '../../types/index';
 
 export class Buyer {
-    protected payment: 'card' | 'cash' | null;
-    protected address: string;
-    protected email: string;
-    protected phone: string;
+    protected payment: TPayment | null = null;
+    protected address: string = '';
+    protected email: string = '';
+    protected phone: string = '';
 
-    constructor() {
-        this.payment = null;
-        this.address = '';
-        this.email = '';
-        this.phone = '';
-    }
+    constructor() {}
 
     setField(field: string, value: string): void {
         if (field === 'payment' && (value === 'card' || value === 'cash')) {
-            this.payment = value as 'card' | 'cash';
+            this.payment = value as TPayment;
         } else if (field === 'address') {
             this.address = value;
         } else if (field === 'email') {
@@ -25,7 +20,7 @@ export class Buyer {
         }
     }
 
-    setPayment(payment: 'card' | 'cash'): void {
+    setPayment(payment: TPayment): void {
         this.payment = payment;
     }
 
@@ -57,8 +52,8 @@ export class Buyer {
         this.phone = '';
     }
 
-    validate(): { valid: boolean; errors: Record<string, string> } {
-        const errors: Record<string, string> = {};
+    validate(): { valid: boolean; errors: TBuyerErrors } {
+        const errors: TBuyerErrors = {};
 
         if (!this.payment) {
             errors.payment = 'Не выбран вид оплаты';

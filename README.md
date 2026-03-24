@@ -113,12 +113,12 @@ Presenter - презентер содержит основную логику п
 ```typescript
 // Товар
 interface IProduct {
-  id: string;
-  description: string;
-  image: string;
-  title: string;
-  category: string;
-  price: number | null;
+  id: string;           // Уникальный идентификатор товара
+  description: string;  // Описание товара
+  image: string;        // URL изображения товара
+  title: string;        // Название товара
+  category: string;     // Категория товара
+  price: number | null; // Цена товара
 } 
 
 // Покупатель (данные для заказа)
@@ -139,8 +139,8 @@ interface IBuyer {
 `constructor()` — создаёт пустой каталог товаров.
 
 Поля класса:  
-`_items: IProduct[]` — массив всех товаров в каталоге.  
-`_selectedItem: IProduct | null` — текущий выбранный товар для отображения (или `null`, если ничего не выбрано).
+`items: IProduct[]` — массив всех товаров в каталоге.  
+`selectedItem: IProduct | null` — текущий выбранный товар для отображения (или `null`, если ничего не выбрано).
 
 Методы класса:  
 `setProducts(products: IProduct[]): void` — сохраняет массив товаров, полученный от сервера.
@@ -156,7 +156,7 @@ interface IBuyer {
 `constructor()` — создаёт пустую корзину.
 
 Поля класса:  
-`_items: IProduct[]` — массив товаров, выбранных покупателем для покупки.
+`items: IProduct[]` — массив товаров, выбранных покупателем для покупки.
 
 Методы класса:  
 `getItems(): IProduct[]` — возвращает массив товаров, которые находятся в корзине.  

@@ -1,9 +1,10 @@
 import { Api } from './components/base/Api';
-import { ApiClient } from './components/base/ApiClient';
-import { Buyer } from './components/base/Models/Buyer';
-import { Cart } from './components/base/Models/Cart';
-import { ProductCatalog } from './components/base/Models/ProductCatalog';
+import { ApiClient } from './components/ApiClient';
+import { Buyer } from './components/Models/Buyer';
+import { Cart } from './components/Models/Cart';
+import { ProductCatalog } from './components/Models/ProductCatalog';
 import './scss/styles.scss';
+import { API_URL } from './utils/constants';
 import { apiProducts } from './utils/data';
 
 // Проверка Модели ProductCatalog
@@ -46,6 +47,9 @@ console.log('Общая стоимость:', cartModel.getTotal());
 
 cartModel.removeItem(secondProduct.id);
 console.log('Удалённый товар есть в корзине?', cartModel.hasItem(secondProduct.id));
+console.log('Товары в корзине после удаления:', cartModel.getItems());
+console.log('Количество товаров после удаления:', cartModel.getCount());
+console.log('Общая стоимость после удаления:', cartModel.getTotal());
 
 cartModel.clear();
 console.log('Корзина очищена');
@@ -78,7 +82,7 @@ console.log('Данные:', buyerModel.getData());
 console.log('Валидация:', buyerModel.validate());
 
 // работа с сервером
-const api = new Api('https://larek-api.nomoreparties.co/api/weblarek');
+const api = new Api(API_URL);
 
 const apiClient = new ApiClient(api);
 
