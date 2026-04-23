@@ -7,16 +7,10 @@ export interface IApi {
 
 export type TPayment = 'card' | 'cash';
 
-export interface IProduct {
-  id: string;
-  description: string;
-  image: string;
+export interface ICard {
   title: string;
-  category: string;
   price: number | null;
-} 
-
-export type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
+}
 
 export interface IBuyer {
   payment: TPayment;
@@ -24,6 +18,15 @@ export interface IBuyer {
   phone: string;
   address: string;
 }
+
+export interface IProduct extends ICard {
+  id: string;
+  description: string;
+  image: string;
+  category: string;
+}
+
+export type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
 
 export interface IServerProductsResponse {
   total: number;
@@ -39,3 +42,7 @@ export interface IOrderResponse {
   id: string;
   total: number;
 }
+
+export type ICardActions = { onClick(): void };
+
+export type IInput = { value: string };

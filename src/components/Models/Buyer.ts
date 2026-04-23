@@ -1,7 +1,7 @@
 import { IBuyer, TPayment, TBuyerErrors } from '../../types/index';
 
 export class Buyer {
-    protected payment: TPayment | null = null;
+    protected payment: TPayment | undefined = undefined;
     protected address: string = '';
     protected email: string = '';
     protected phone: string = '';
@@ -10,7 +10,7 @@ export class Buyer {
 
     setField(field: string, value: string): void {
         if (field === 'payment' && (value === 'card' || value === 'cash')) {
-            this.payment = value as TPayment;
+            this.payment = value;
         } else if (field === 'address') {
             this.address = value;
         } else if (field === 'email') {
@@ -20,33 +20,17 @@ export class Buyer {
         }
     }
 
-    setPayment(payment: TPayment): void {
-        this.payment = payment;
-    }
-
-    setAddress(address: string): void {
-        this.address = address;
-    }
-
-    setEmail(email: string): void {
-        this.email = email;
-    }
-
-    setPhone(phone: string): void {
-        this.phone = phone;
-    }
-
-    getData(): IBuyer {
-        return {
-            payment: this.payment!,
-            address: this.address,
-            email: this.email,
-            phone: this.phone
-        }
-    }
+    getData(): Partial<IBuyer> {
+  return {
+    payment: this.payment,
+    address: this.address,
+    email: this.email,
+    phone: this.phone
+  };
+}
 
     clear(): void {
-        this.payment = null;
+        this.payment = undefined;;
         this.address = '';
         this.email = '';
         this.phone = '';
@@ -55,12 +39,12 @@ export class Buyer {
     validate(): { valid: boolean; errors: TBuyerErrors } {
         const errors: TBuyerErrors = {};
 
-        if (!this.payment) {
-            errors.payment = 'Не выбран вид оплаты';
-        }
+        // if (!this.payment) {
+        //     errors.payment = 'Не выбран вид оплаты';
+        // }
 
         if (!this.address.trim()) {
-            errors.address = 'Укажите адрес';
+            errors.address = 'Необходимо указать адрес';
         }
 
         if (!this.email.trim()) {
