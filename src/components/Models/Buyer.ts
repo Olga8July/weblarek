@@ -1,12 +1,13 @@
 import { IBuyer, TPayment, TBuyerErrors } from '../../types/index';
+import { IEvents } from '../base/Events';
 
 export class Buyer {
-    protected payment: TPayment | undefined = undefined;
+    protected payment: TPayment | null = null;
     protected address: string = '';
     protected email: string = '';
     protected phone: string = '';
 
-    constructor() {}
+    constructor(protected events: IEvents) {}
 
     setField(field: string, value: string): void {
         if (field === 'payment' && (value === 'card' || value === 'cash')) {
@@ -18,30 +19,32 @@ export class Buyer {
         } else if (field === 'phone') {
             this.phone = value;
         }
+        this.events.emit('buyer::set-data');
     }
 
-    getData(): Partial<IBuyer> {
-  return {
-    payment: this.payment,
-    address: this.address,
-    email: this.email,
-    phone: this.phone
-  };
-}
+    getData(): IBuyer {
+        return {
+            payment: this.payment,
+            address: this.address,
+            email: this.email,
+            phone: this.phone
+        };
+    }
 
     clear(): void {
-        this.payment = undefined;;
+        this.payment = null;;
         this.address = '';
         this.email = '';
         this.phone = '';
+        this.events.emit('buyer::set-data');
     }
 
     validate(): { valid: boolean; errors: TBuyerErrors } {
         const errors: TBuyerErrors = {};
 
-        // if (!this.payment) {
-        //     errors.payment = 'Не выбран вид оплаты';
-        // }
+        if (!this.payment) {
+            errors.payment = 'Не выбран вид оплаты';
+        }
 
         if (!this.address.trim()) {
             errors.address = 'Необходимо указать адрес';

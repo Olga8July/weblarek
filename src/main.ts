@@ -20,9 +20,9 @@ import { OrderSuccess } from './components/Views/OrderSuccess';
 import { IBuyer, IProduct, IOrderRequest, IInput } from './types';
 
 const events = new EventEmitter();
-const productCatalogModel = new ProductCatalog();
-const cartModel = new Cart();
-const buyerModel = new Buyer();
+const productCatalogModel = new ProductCatalog(events);
+const cartModel = new Cart(events);
+const buyerModel = new Buyer(events);
 const api = new Api(API_URL);
 const apiClient = new ApiClient(api);
 
@@ -60,7 +60,6 @@ events.on('catalog:changed', () => {
 
 events.on('card::select', (item: IProduct) => {
   productCatalogModel.setSelectedItem(item);
-  events.emit('catalog::select');
 });
 
 events.on('catalog::select', () => {
@@ -115,98 +114,47 @@ events.on('cart::change', () => {
 });
 
 events.on('basket::open', () => {
-  const products = cartModel.getItems();
-  const totalPrice = cartModel.getTotal();
-  const isEmpty = totalPrice === 0;
-
-  const basketList = products.map((item, index) => {
-    const basketItem = new CardBasket(cloneTemplate('#card-basket'), {
-      onClick: () => events.emit('basket::delete', item),
-    });
-    return basketItem.render({ itemIndex: index + 1, ...item });
-  });
-
-  modal.content = basket.render({
-    basketList,
-    basketPrice: totalPrice,
-    buttonStatus: isEmpty,
-  });
+  modal.content = basket.render();
   modal.open();
 });
 
 events.on('basket::delete', (item: IProduct) => {
   cartModel.removeItem(item.id);
-  
-  events.emit('cart::change');
-  
-  const products = cartModel.getItems();
-  const totalPrice = cartModel.getTotal();
-  const isEmpty = totalPrice === 0;
-
-  const basketList = products.map((item, index) => {
-    const basketItem = new CardBasket(cloneTemplate('#card-basket'), {
-      onClick: () => events.emit('basket::delete', item),
-    });
-    return basketItem.render({ itemIndex: index + 1, ...item });
-  });
-
-  modal.content = basket.render({
-    basketList,
-    basketPrice: totalPrice,
-    buttonStatus: isEmpty,
-  });
 });
 
 events.on('basket::make-order', () => {
-
-  modal.content = formOrder.render({
-    address: '',
-    buttonDisabledState: true
-  });
+  modal.content = formOrder.render();
   modal.open();
   formOrder.setFocus();
-  events.emit('buyer::set-data')
-  formOrder.errors = '';
+  events.emit('buyer::set-data');
 });
 
 events.on('form::card', () => {
   buyerModel.setField('payment', 'card');
-  events.emit('buyer::set-data');
   formOrder.setFocus()
 });
 
 events.on('form::cash', () => {
   buyerModel.setField('payment', 'cash');
-  events.emit('buyer::set-data');
   formOrder.setFocus()
 });
 
 events.on('form::address', (data: IInput) => {
   buyerModel.setField('address', String(data.value));
-  events.emit('buyer::set-data')
 });
 
 events.on('form::email', (data: IInput) => {
   buyerModel.setField('email', String(data.value));
-  events.emit('buyer::set-data')
 });
 
 events.on('form::phone', (data: IInput) => {
   buyerModel.setField('phone', String(data.value));
-  events.emit('buyer::set-data')
 });
 
 events.on('form::next', () => {
-  formContacts.errors = "";
-
-  const { email, phone } = buyerModel.getData();
-
-  modal.content = formContacts.render({
-    email: email || '',
-    phone: phone || '',
-    buttonDisabledState: !(email && phone)
-  });
+  modal.content = formContacts.render();
   modal.open();
+  events.emit('buyer::set-data');
 });
 
 events.on('form::submit', () => {

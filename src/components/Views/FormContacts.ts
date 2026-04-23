@@ -12,7 +12,6 @@ interface IFormContacts {
 export class FormContacts extends Form<IFormContacts> {
   protected emailInput: HTMLInputElement;
   protected phoneInput: HTMLInputElement;
-  protected submitButton: HTMLButtonElement;
 
   constructor(protected events: IEvents, container: HTMLFormElement) {
     super(container);
@@ -20,8 +19,6 @@ export class FormContacts extends Form<IFormContacts> {
     this.emailInput = ensureElement<HTMLInputElement>('input[name=email]', container);
 
     this.phoneInput = ensureElement<HTMLInputElement>('input[name=phone]', container);
-
-    this.submitButton = ensureElement<HTMLButtonElement>('button[type=submit]', container);
 
     this.emailInput.addEventListener('change', () =>
       events.emit<IInput>('form::email', { value: this.emailInput.value }),
@@ -31,7 +28,7 @@ export class FormContacts extends Form<IFormContacts> {
       events.emit<IInput>('form::phone', { value: this.phoneInput.value }),
     );
 
-    this.submitButton.addEventListener('click', (event) => {
+    this._submitButton.addEventListener('click', (event) => {
       event.preventDefault();
       events.emit('form::submit');
     });
@@ -43,9 +40,5 @@ export class FormContacts extends Form<IFormContacts> {
 
   set phone(value: string) {
     this.phoneInput.value = value;
-  }
-
-  set buttonDisabledState(state: boolean) {
-    this.submitButton.disabled = state;
   }
 }

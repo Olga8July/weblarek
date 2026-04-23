@@ -4,7 +4,7 @@ import { Form } from './Form';
 import { IInput, TPayment } from '../../types';
 
 interface IFormOrder {
-  payment?: TPayment;
+  payment?: TPayment | null;
   address: string;
   buttonDisabledState: boolean;
 }
@@ -13,7 +13,6 @@ export class FormOrder extends Form<IFormOrder> {
   protected cardButton: HTMLButtonElement;
   protected cashButton: HTMLButtonElement;
   protected addressInput: HTMLInputElement;
-  protected nextButton: HTMLButtonElement;
 
   constructor(protected events: IEvents, container: HTMLFormElement) {
     super(container);
@@ -21,17 +20,14 @@ export class FormOrder extends Form<IFormOrder> {
     this.cardButton = ensureElement<HTMLButtonElement>('button[name=card]', container);
     this.cashButton = ensureElement<HTMLButtonElement>('button[name=cash]', container);
     this.addressInput = ensureElement<HTMLInputElement>('input[name=address]', container);
-    this.nextButton = ensureElement<HTMLButtonElement>('.order__button', container);
 
     this.cardButton.addEventListener('click', (e) => {
       e.preventDefault();
-      this.setPaymentActive('card');
       this.events.emit('form::card');
     });
 
     this.cashButton.addEventListener('click', (e) => {
       e.preventDefault();
-      this.setPaymentActive('cash');
       this.events.emit('form::cash');
     });
 
@@ -41,7 +37,7 @@ export class FormOrder extends Form<IFormOrder> {
       });
     });
 
-    this.nextButton.addEventListener('click', (e) => {
+    this._submitButton.addEventListener('click', (e) => {
       e.preventDefault();
       this.events.emit('form::next');
     });
@@ -65,11 +61,7 @@ export class FormOrder extends Form<IFormOrder> {
       this.cashButton.classList.remove('button_alt-active');
     }
   }
-
-  set buttonDisabledState(state: boolean) {
-    this.nextButton.disabled = state;
-  }
-
+  
   setFocus() {
     this.addressInput.focus();
   }
